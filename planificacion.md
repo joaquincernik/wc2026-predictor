@@ -101,3 +101,123 @@ npm run preview
 5. Implementar lógica de guardado en localStorage
 6. Configurar vite.config.js para GitHub Pages
 7. Build y deploy
+
+## 9. Fase 2: Simulación y Resultados
+
+### 9.1 Datos de Resultados Reales
+
+Los partidos ya tienen fecha y resultado real (en vivo o Hardcoded):
+- A: Mexico vs South Africa - **2-1** (Mexico)
+- B: Canada vs Bosnia & Herzegovina - **0-0** (Draw)
+- C: Brazil vs Morocco - **2-1** (Brazil)
+- D: USA vs Paraguay - **0-0** (Draw)
+- E: Germany vs Curaçao - **4-0** (Germany)
+- F: Ivory Coast vs Ecuador - **2-1** (Ecuador)
+- G: Belgium vs Egypt - **0-0** (Draw)
+- H: Spain vs Cape Verde - **2-1** (Spain)
+- I: France vs Senegal - **1-0** (France)
+- J: Argentina vs Algeria - **2-0** (Argentina)
+- K: Portugal vs DR Congo - **2-0** (Portugal)
+- L: England vs Croatia - **1-1** (Draw)
+
+*NOTA: Resultados hardcodeados como ejemplo. Se pueden actualizar con datos reales.*
+
+### 9.2 Funcionalidad de Simulación
+
+1. **Botón "Simular Resultados"**: Genera los resultados de cada partido
+2. **Comparación automática**: Compara predicción del usuario vs resultado real
+3. **Contador de aciertos**: Muestra X/12 aciertos
+4. **Detalle por grupo**: Muestra ✓ o ✗ para cada grupo
+5. **Panel de resumen**: Modal o sección con estadísticas finales
+
+### 9.3 Estructura de Datos
+
+```javascript
+// En groups.js - agregar campo de resultado real
+{
+  name: 'A',
+  teams: [...],
+  firstMatch: {
+    home: 'Mexico',
+    away: 'South Africa',
+    date: 'June 11, 2026',
+    // Nuevo:
+    result: { home: 2, away: 1 },
+    winner: 'Mexico' // o 'Draw'
+  }
+}
+```
+
+### 9.4 Componente ResultsModal.vue
+
+- Modal overlay con los resultados
+- Lista de grupos con predicción vs resultado
+- Número total de aciertos
+- Animación de celebración si tiene > 8 aciertos
+
+## 10. Mejoras de Diseño (Frontend Design)
+
+### 10.1 Bibliotecas a instalar
+
+- **@vueuse/core** - Utilidades de Vue (localStorage reactivo)
+- **animate.css** - Animaciones CSS
+- **lucide-vue-next** - Iconos modernos
+
+### 10.2 Mejoras visuales
+
+1. **Tarjetas de grupos**:
+   - Gradientes según grupo (A-L con colores distintos)
+   - Efectos glassmorphism
+   - Hover con lift animation
+
+2. **Header mejorado**:
+   - Fondo con patrón de fútbol o textura
+   - Título con texto gradiente
+   - Contador de predicciones animado
+
+3. **Sección de predicción**:
+   - Botones con estados (hover, active, selected)
+   - Transiciones suaves
+   - Iconos de selección visual
+
+4. **Modal de resultados**:
+   - Backdrop blur
+   - Animación de entrada (scale + fade)
+   - Confetti si > 8 aciertos
+
+5. ** Responsive**:
+   - Grid adaptativo
+   - Tarjetas apiladas en móvil
+
+### 10.3 Paleta de colores
+
+- Primary: `#667eea` → `#764ba2` (gradiente Violeta)
+- Secondary: `#f093fb` → `#f5576c` (gradiente Rosa)
+- Background: Degradado global
+- Texto: `#1a1a2e` (oscuro) / `#ffffff` (claro)
+
+### 10.4 Animaciones
+
+- Entrada de tarjetas: `fade-in-up` con stagger
+- Hover en cards: `transform: translateY(-4px)`
+- Selección: `scale(0.95)` → `scale(1)`
+- Modal: `fade-in` + `zoom-in`
+
+## 11. Comandos de Desarrollo
+
+```bash
+# Desarrollo
+npm run dev
+
+# Build producción
+npm run build
+
+# Preview local
+npm run preview
+```
+
+## 12. Deploy a GitHub Pages
+
+1. Hacer commit y push a main
+2. En GitHub: Settings → Pages → Deploy from branch: main, folder: /dist
+3. URL final: `https://[usuario].github.io/wc2026-predictor/`

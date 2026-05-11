@@ -3,7 +3,11 @@ import { ref, watch } from 'vue'
 
 const props = defineProps({
   group: Object,
-  prediction: String
+  prediction: String,
+  colors: {
+    type: Array,
+    default: () => ['oklch(65% 0.18 260)', 'oklch(75% 0.15 280)']
+  }
 })
 
 const emit = defineEmits(['predict'])
@@ -21,229 +25,117 @@ const handleSelect = (option) => {
 
 const getTeamFlag = (team) => {
   const flags = {
-    'Mexico': '🇲🇽',
-    'South Africa': '🇿🇦',
-    'South Korea': '🇰🇷',
-    'Czechia': '🇨🇿',
-    'Canada': '🇨🇦',
-    'Bosnia & Herzegovina': '🇧🇦',
-    'Qatar': '🇶🇦',
-    'Switzerland': '🇨🇭',
-    'Brazil': '🇧🇷',
-    'Morocco': '🇲🇦',
-    'Haiti': '🇭🇹',
-    'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
-    'USA': '🇺🇸',
-    'Paraguay': '🇵🇾',
-    'Australia': '🇦🇺',
-    'Türkiye': '🇹🇷',
-    'Germany': '🇩🇪',
-    'Curaçao': '🇨🇼',
-    'Netherlands': '🇳🇱',
-    'Japan': '🇯🇵',
-    'Ivory Coast': '🇨🇮',
-    'Ecuador': '🇪🇨',
-    'Sweden': '🇸🇪',
-    'Tunisia': '🇹🇳',
-    'Belgium': '🇧🇪',
-    'Egypt': '🇪🇬',
-    'Iran': '🇮🇷',
-    'New Zealand': '🇳🇿',
-    'Spain': '🇪🇸',
-    'Cape Verde': '🇨🇻',
-    'Saudi Arabia': '🇸🇦',
-    'Uruguay': '🇺🇾',
-    'France': '🇫🇷',
-    'Senegal': '🇸🇳',
-    'Iraq': '🇮🇶',
-    'Norway': '🇳🇴',
-    'Argentina': '🇦🇷',
-    'Algeria': '🇩🇿',
-    'Austria': '🇦🇹',
-    'Jordan': '🇯🇴',
-    'Portugal': '🇵🇹',
-    'DR Congo': '🇨🇩',
-    'Uzbekistan': '🇺🇿',
-    'Colombia': '🇨🇴',
-    'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    'Croatia': '🇭🇷',
-    'Ghana': '🇬🇭',
-    'Panama': '🇵🇦'
+    'Mexico': '🇲🇽', 'South Africa': '🇿🇦', 'South Korea': '🇰🇷', 'Czechia': '🇨🇿',
+    'Canada': '🇨🇦', 'Bosnia & Herzegovina': '🇧🇦', 'Qatar': '🇶🇦', 'Switzerland': '🇨🇭',
+    'Brazil': '🇧🇷', 'Morocco': '🇲🇦', 'Haiti': '🇭🇹', 'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+    'USA': '🇺🇸', 'Paraguay': '🇵🇾', 'Australia': '🇦🇺', 'Türkiye': '🇹🇷',
+    'Germany': '🇩🇪', 'Curaçao': '🇨🇼', 'Netherlands': '🇳🇱', 'Japan': '🇯🇵',
+    'Ivory Coast': '🇨🇮', 'Ecuador': '🇪🇨', 'Sweden': '🇸🇪', 'Tunisia': '🇹🇳',
+    'Belgium': '🇧🇪', 'Egypt': '🇪🇬', 'Iran': '🇮🇷', 'New Zealand': '🇳🇿',
+    'Spain': '🇪🇸', 'Cape Verde': '🇨🇻', 'Saudi Arabia': '🇸🇦', 'Uruguay': '🇺🇾',
+    'France': '🇫🇷', 'Senegal': '🇸🇳', 'Iraq': '🇮🇶', 'Norway': '🇳🇴',
+    'Argentina': '🇦🇷', 'Algeria': '🇩🇿', 'Austria': '🇦🇹', 'Jordan': '🇯🇴',
+    'Portugal': '🇵🇹', 'DR Congo': '🇨🇩', 'Uzbekistan': '🇺🇿', 'Colombia': '🇨🇴',
+    'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Croatia': '🇭🇷', 'Ghana': '🇬🇭', 'Panama': '🇵🇦'
   }
   return flags[team] || '⚽'
+}
+
+const gradientBg = `linear-gradient(135deg, ${props.colors[0]}15, ${props.colors[1]}15)`
+const gradientBorder = `linear-gradient(135deg, ${props.colors[0]}, ${props.colors[1]})`
+const badgeGradient = `linear-gradient(135deg, ${props.colors[0]}, ${props.colors[1]})`
+const matchGradient = `linear-gradient(135deg, oklch(85% 0.12 280), oklch(75% 0.15 280))`
+const buttonGradient = `linear-gradient(135deg, ${props.colors[0]}, ${props.colors[1]})`
+
+const getButtonClass = (option) => {
+  const base = 'flex-1 flex items-center justify-center gap-1 py-2.5 px-1 rounded-xl border-2 transition-all duration-300 hover:-translate-y-0.5 text-xs font-medium min-w-0'
+  const baseClasses = 'border-border/20 bg-card/30 text-muted-foreground hover:border-primary/50 hover:bg-card/50'
+  const activeClasses = 'text-foreground border-transparent'
+  
+  if (selected.value === option) {
+    return `${base} ${activeClasses} ${getOptionGradient(option)}`
+  }
+  return `${base} ${baseClasses}`
+}
+
+const getOptionGradient = (option) => {
+  if (option === 'Draw') return 'bg-warning text-foreground'
+  if (option === props.group.firstMatch.home) return 'bg-success text-foreground'
+  return 'bg-error text-foreground'
 }
 </script>
 
 <template>
-  <div class="group-card" :class="{ predicted: prediction }">
-    <div class="group-header">
-      <h2>Group {{ group.name }}</h2>
+  <div
+    class="relative overflow-hidden rounded-2xl border border-border/30 backdrop-blur-xl transition-all duration-400 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 group"
+    :style="{ background: gradientBg }"
+  >
+    <div class="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      :style="{ background: `radial-gradient(circle at 50% 0%, ${colors[0]}30, transparent 70%)` }">
     </div>
 
-    <div class="teams-list">
-      <div v-for="team in group.teams" :key="team" class="team">
-        <span class="flag">{{ getTeamFlag(team) }}</span>
-        {{ team }}
-      </div>
-    </div>
-
-    <div class="match-info">
-      <div class="match-label">First Match</div>
-      <div class="match-teams">
-        <span>{{ group.firstMatch.home }}</span>
-        <span class="vs">vs</span>
-        <span>{{ group.firstMatch.away }}</span>
-      </div>
-      <div class="match-details">
-        <div>{{ group.firstMatch.date }}</div>
-        <div>{{ group.firstMatch.time }}</div>
-        <div class="stadium">{{ group.firstMatch.stadium }}</div>
-      </div>
-    </div>
-
-    <div class="prediction-section">
-      <div class="prediction-label">Your prediction:</div>
-      <div class="prediction-buttons">
-        <button
-          v-for="team in [group.firstMatch.home, 'Draw', group.firstMatch.away]"
-          :key="team"
-          :class="{ active: selected === team }"
-          @click="handleSelect(team)"
+    <div class="p-5">
+      <div class="mb-4">
+        <span
+          class="inline-block px-4 py-1.5 rounded-full text-sm font-bold text-white uppercase tracking-wide"
+          :style="{ background: badgeGradient }"
         >
-          {{ team === 'Draw' ? '🤝 Draw' : getTeamFlag(team) + ' ' + team }}
-        </button>
+          Group {{ group.name }}
+        </span>
+      </div>
+
+      <div class="bg-card/40 rounded-xl p-3 mb-4">
+        <div v-for="team in group.teams" :key="team" class="flex items-center gap-2 py-2 border-b border-border/10 last:border-0">
+          <span class="text-lg flex-shrink-0">{{ getTeamFlag(team) }}</span>
+          <span class="text-foreground font-medium text-xs truncate">{{ team }}</span>
+        </div>
+      </div>
+
+      <div class="rounded-xl p-4 mb-4" :style="{ background: matchGradient }">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-1.5 text-foreground font-semibold text-xs min-w-0">
+            <span class="text-base flex-shrink-0">{{ getTeamFlag(group.firstMatch.home) }}</span>
+            <span class="truncate">{{ group.firstMatch.home }}</span>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-xs font-bold text-white flex-shrink-0" style="background: linear-gradient(135deg, oklch(65% 0.18 260), oklch(75% 0.15 280));">
+            VS
+          </span>
+          <div class="flex items-center gap-1.5 text-foreground font-semibold text-xs min-w-0">
+            <span class="truncate">{{ group.firstMatch.away }}</span>
+            <span class="text-base flex-shrink-0">{{ getTeamFlag(group.firstMatch.away) }}</span>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1 text-xs text-foreground/80">
+          <div class="flex items-center gap-1.5">
+            <span>📅</span> {{ group.firstMatch.date }}
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span>🕐</span> {{ group.firstMatch.time }}
+          </div>
+          <div class="truncate text-foreground/60">
+            <span>📍</span> {{ group.firstMatch.stadium }}
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-3 text-sm">
+          <span class="text-muted-foreground">Your prediction</span>
+          <span v-if="prediction" class="text-success font-bold">✓</span>
+        </div>
+        <div class="flex gap-1.5">
+          <button
+            v-for="option in [group.firstMatch.home, 'Draw', group.firstMatch.away]"
+            :key="option"
+            :class="getButtonClass(option)"
+            @click="handleSelect(option)"
+            :title="option"
+          >
+            <span v-if="option === 'Draw'" class="text-lg">🤝</span>
+            <span v-else class="text-xl">{{ getTeamFlag(option) }}</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.group-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.group-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.group-card.predicted {
-  border: 2px solid #667eea;
-}
-
-.group-header {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.group-header h2 {
-  margin: 0;
-  color: #1a1a2e;
-  font-size: 1.5rem;
-}
-
-.teams-list {
-  margin-bottom: 15px;
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 8px;
-}
-
-.team {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 0;
-  font-weight: 500;
-}
-
-.flag {
-  font-size: 1.2rem;
-}
-
-.match-info {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.match-label {
-  font-size: 0.8rem;
-  opacity: 0.9;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.match-teams {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-weight: 600;
-  font-size: 1.1rem;
-}
-
-.vs {
-  opacity: 0.8;
-  font-size: 0.9rem;
-}
-
-.match-details {
-  margin-top: 10px;
-  font-size: 0.85rem;
-  opacity: 0.9;
-}
-
-.stadium {
-  margin-top: 4px;
-  font-size: 0.8rem;
-}
-
-.prediction-section {
-  text-align: center;
-}
-
-.prediction-label {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.prediction-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.prediction-buttons button {
-  flex: 1;
-  min-width: 80px;
-  padding: 10px 8px;
-  border: 2px solid #e0e0e0;
-  background: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.2s;
-}
-
-.prediction-buttons button:hover {
-  border-color: #667eea;
-  background: #f0f0ff;
-}
-
-.prediction-buttons button.active {
-  border-color: #667eea;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-</style>
